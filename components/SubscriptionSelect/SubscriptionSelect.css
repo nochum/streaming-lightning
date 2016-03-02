@@ -1,0 +1,36 @@
+.THIS {
+}
+
+.THIS #object-element {
+    /* width: 250px; */
+    width: 15%;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 10px;
+    padding: 0 1.5rem;
+    flex: 0 0 auto;
+}
+
+.THIS #field-element {
+    /* width: 250px; */
+    width: 20%;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 10px;
+    padding: 0 1.5rem;
+    flex: 0 0 auto;
+}
+
+.THIS #send-element {
+    /* width: 100px; */
+    width: 65%;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 30px;
+    padding: 0 1.5rem;
+    flex: 0 0 auto;
+}
+
+.THIS #child-element {
+    margin-top: 10px;
+}

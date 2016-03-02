@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" description="This event is passed from the screaming child to the parent to advise of the new pause state for streaming.">
+    <aura:attribute name="state" type="String"/>
+</aura:event>

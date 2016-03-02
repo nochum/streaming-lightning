@@ -1,0 +1,72 @@
+public with sharing class MetadataDescribeController {
+    /**
+     * Returns a map of all objects in the org with their labels. Note
+     * that not all standard objects can be streamed.  This method
+     * only returns objects that are accessible and can be streamed.
+     */
+    @AuraEnabled
+    public static Map<String, String> getObjectNames() {
+        Map<String, Schema.SObjectType> gd = Schema.getGlobalDescribe();
+        
+        Map<String, String> objMap = new Map<String, String>();
+        for (Schema.SObjectType objType : gd.values()) {
+            Schema.DescribeSObjectResult sor = objType.getDescribe();
+            if (sor.isAccessible() && sor.isQueryable()) {
+                String objLabel = sor.getLabel();
+                String objName = sor.getName();
+                if (sor.isCustom() || objName.equals('Account') || objName.equals('Campaign') ||
+                   objName.equals('Case') || objName.equals('Contact') || objName.equals('Lead') ||
+                    objName.equals('Opportunity') || objName.equals('Task') ) {
+                        objMap.put(objLabel, objName);                
+                    }
+            }
+        }
+                
+        // sort the result set so the list is easy to navigate
+        Set<String> keySet = objMap.keySet();
+        List<String> keyList = new List<String>();
+        keyList.addAll(keySet);
+        keyList.sort();
+        Map<String, String> sortedMap = new Map<String, String>();
+        for (String sortedKey: keyList) {
+            sortedMap.put(sortedKey, objMap.get(sortedKey));
+        }
+        
+        return sortedMap;
+    }
+
+    /**
+     * Returns a map of fields with their labels for a particular object.  Since
+     * TextArea fields cannot be streamed, they are excluded from the picklist.
+     */
+    @AuraEnabled
+    public static Map<String, String> getObjectFields(String objName) {
+        String[] types = new String[]{objName};
+        Schema.DescribeSobjectResult[] results = Schema.describeSObjects(types);
+        
+        Map<String, String> fldMap = new Map<String, String>();
+        for(Schema.DescribeSobjectResult res : results) {
+            Map<String, Schema.SObjectField> fldTypeMap = res.fields.getMap();
+            for (Schema.SObjectField fldType : fldTypeMap.values()) {
+                Schema.DescribeFieldResult fr = fldType.getDescribe();
+                if (fr.getType() != Schema.DisplayType.TEXTAREA) {
+                    String fldLabel = fr.getLabel();
+                    String fldName = fr.getName();
+                    fldMap.put(fldLabel, fldName);                    
+                }
+            }
+        }
+                
+        // sort the result set so the list is easy to navigate
+        Set<String> keySet = fldMap.keySet();
+        List<String> keyList = new List<String>();
+        keyList.addAll(keySet);
+        keyList.sort();
+        Map<String, String> sortedMap = new Map<String, String>();
+        for (String sortedKey: keyList) {
+            sortedMap.put(sortedKey, fldMap.get(sortedKey));
+        }
+
+        return sortedMap;
+    }
+}

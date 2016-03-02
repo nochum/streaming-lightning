@@ -1,0 +1,51 @@
+<aura:component controller="MetadataDescribeController" implements="force:appHostable,flexipage:availableForAllPageTypes" >
+    <ltng:require styles="/resource/slds090/assets/styles/salesforce-lightning-design-system.min.css"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="pauseStatusEvent" event="c:PauseStatus" action="{!c.handlePauseStatus}"/>
+    
+    <!-- Attributes for Objects and Fields -->
+    <aura:attribute name="objectOptions" type="Object[]"/>
+    <aura:attribute name="fieldOptions" type="Object[]"/>
+    
+    <!-- Input Form using components -->
+    <div class="container">
+        <form class="slds-form--stacked">
+            <div class="slds-form-element" id="object-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <span class="slds-form-element__label" aria-label="select-object">Select Object</span>
+                        <ui:inputSelect aura:id="objectSelect" class="slds-select" change="{!c.handleObjectChange}">
+                            <ui:inputSelectOption class="slds-picklist__item" text="" label="--None--"/>
+                            <aura:iteration items="{!v.objectOptions}" var="obj">
+                                <ui:inputSelectOption class="slds-picklist__item" text="{!obj.value}" label="{!obj.label}"/>
+                            </aura:iteration>
+                        </ui:inputSelect>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element" id="field-element">
+                <div class="slds-form-element__control">
+                    <span class="slds-form-element__label" aria-label="select-fields">Select Fields</span>
+                    <div class="slds-select_container">
+                        <ui:inputSelect multiple="true" aura:id="fieldSelect" class="slds-picklist__options slds-picklist__options--multi shown">
+                            <aura:iteration items="{!v.fieldOptions}" var="fld">
+                                <ui:inputSelectOption class="slds-picklist__item" text="{!fld.value}" label="{!fld.label}"/>
+                            </aura:iteration>
+                        </ui:inputSelect>
+                    </div>
+                </div>
+            </div>
+            <div id="send-element">
+                <button id="btn-subscribe" class="slds-button slds-button--brand" type="button" onclick="{!c.subscribe}">Subscribe</button>
+                <button id="btn-clear" class="slds-button slds-button--brand" type="button" onclick="{!c.clear}">Clear</button>
+                <button id="btn-pause" class="slds-button slds-button--brand" type="button" onclick="{!c.togglePauseState}">Pause</button>
+                <div id="child-element">
+                    <c:ScreamingChild aura:id="screamingChild"/>
+                </div>
+            </div>
+        </form>
+    </div> <!-- ./container-->
+    <!-- Display the ScreamingChild component in a separate container div -->
+
+</aura:component>

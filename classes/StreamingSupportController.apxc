@@ -1,0 +1,54 @@
+public with sharing class StreamingSupportController {
+    /**
+     * This is a hack.  Salesforce currently does not provide a way to 
+     * retrieve the session token from within a Lightning Component.  This
+     * does not compromise security since the only way to run this code is
+     * if you already have established a vaid session and successfully
+     * authenticated.
+     **/
+    @AuraEnabled
+    public static String sessionId() {
+        return UserInfo.getSessionId();
+    }
+
+    /**
+     * Topics must be unique and specific to a user.  We will use the user's
+     * unique Id as part of the PushTopic Name to ensure this.
+     **/
+    @AuraEnabled
+    public static String userId() {
+        return UserInfo.getUserId();
+    }
+    
+    /**
+     * Check whether the PushTopic already exists.  If it does, update it. If
+     * it doesn't, create it.
+     **/
+    @AuraEnabled
+    public static String upsertPushTopic(String userId, String strQuery) {
+        Pushtopic pushTopic;
+        List<Pushtopic> topicList = [SELECT Id, ApiVersion, Name, Description, Query FROM Pushtopic WHERE Name = :userId];
+        if (topicList.isEmpty()) {
+            pushTopic = new PushTopic();
+            pushTopic.ApiVersion = 36.0;
+            pushTopic.Name = userId;
+            pushTopic.Description = 'Streaming SOQL based on user preferences.';
+            pushtopic.Query = strQuery;
+            try {
+                insert pushTopic;
+            } catch (DMLException e) {
+                System.debug(e);
+            }
+        } else {
+            pushTopic = topicList[0];
+            pushtopic.Query = strQuery;
+            try {
+                update pushTopic;
+            } catch (DMLException e) {
+                System.debug(e);
+            }
+        }
+
+        return pushTopic.Id;
+    }
+}

@@ -1,0 +1,8 @@
+.THIS {
+}
+
+.THIS #streaming-text {
+    font-family: Courier, monospace;
+    padding: 0 1.5rem;
+    flex: 0 0 auto;
+}

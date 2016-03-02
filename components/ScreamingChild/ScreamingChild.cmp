@@ -1,0 +1,34 @@
+<aura:component controller="StreamingSupportController">
+    <!-- require external JS for streaming here -->
+    <ltng:require scripts="/resource/cometd,/resource/jquery151,/resource/json2,/resource/jquery_cometd"
+                  afterScriptsLoaded="{!c.doInit}" />
+
+    <!-- userId attribute used internally to create unique push topic name -->
+    <aura:attribute name="userId" type="String"/>
+    <aura:attribute name="pauseBuffer" type="String" default=""/>
+    <aura:attribute name="isPaused" type="Boolean" default="false"/>
+
+    <!-- The parent component will call these methods -->
+    <aura:method name="subscribe" action="{!c.subscribe}" access="PUBLIC"
+                 description="The subscribe method takes a SOQL query argument"> 
+        <aura:attribute name="queryStr" type="String" default="" /> 
+    </aura:method>
+    <aura:method name="clear" action="{!c.clear}" access="PUBLIC"
+                 description="This method clears previously received messages"> 
+    </aura:method>
+    <aura:method name="togglePauseState" action="{!c.togglePauseState}" access="PUBLIC"
+                 description="This method pauses the delivery of messages to the textarea"> 
+    </aura:method>
+    
+    <!-- Notify parent upon change to pause status -->
+    <aura:registerEvent name="pauseStatusEvent" type="c:PauseStatus"/>
+
+    <form class="slds-form--stacked">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label" for="streaming-text">Streaming Updates</label>
+            <div class="slds-form-element__control">
+                <textarea id="streaming-text" class="slds-textarea" readonly="true" cols="50" rows="8"/>
+            </div>
+        </div>
+    </form>
+</aura:component>
